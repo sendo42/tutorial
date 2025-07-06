@@ -1,12 +1,12 @@
 "use server";
 
 import { actionClient } from "@/lib/safe-action";
-import { UserOptionalDefaultsSchema } from "@/../prisma/generated/zod/modelSchema/UserSchema";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { signupFormValuesSchema } from "../schemas";
 
 export const signup = actionClient
-    .schema(UserOptionalDefaultsSchema)
+    .schema(signupFormValuesSchema)
     .action(async ({ parsedInput: { name, email, password } }) => {
         try {
             const existingUser = await prisma.user.findUnique({

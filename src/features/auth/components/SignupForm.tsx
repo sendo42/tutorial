@@ -5,6 +5,7 @@ import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hoo
 import { signup } from "../actions/signup";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserOptionalDefaultsSchema } from '../../../../prisma/generated/zod/modelSchema/UserSchema';
+import { signupFormValuesSchema } from "../schemas";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,7 +27,7 @@ const SignupForm = () => {
   const router = useRouter()
   const { form, action, handleSubmitWithAction } =
   useHookFormAction(
-    signup, zodResolver(UserOptionalDefaultsSchema),
+    signup, zodResolver(signupFormValuesSchema),
     {
           actionProps: {
             onSuccess: ({data}) => {
@@ -46,7 +47,7 @@ const SignupForm = () => {
               name: "",
               email: "",
               password: "",
-              imageUrl: null,
+              image: undefined,
             },
           },
           errorMapProps: {},
@@ -100,6 +101,27 @@ const SignupForm = () => {
                   </FormControl>
                   <FormDescription>
                     英数字含めて8文字以上で入力してください。
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>画像</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="shadcn"
+                      type="file"
+                      onChange={(e) => field.onChange(e.target.files?.[0])}
+                      onBlur={field.onBlur}
+                      name={field.name} />
+                  </FormControl>
+                  <FormDescription>
+                    これは公開表示する画像です。
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
