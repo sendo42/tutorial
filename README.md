@@ -1,97 +1,90 @@
-Next.js
+# Next.js 学習メモ
 
-CSR
-	⁃	サーバーからクライアントへ、最小限のHTMLとJavascriptを送り、クライアント側でHTMLを生成。
+## レンダリング手法
 
-SSR
-	⁃	サーバー上でReactのコードが実行されてHTMLを生成し、クライアントに送る方法
+### CSR (Client Side Rendering)
+サーバーからクライアントへ最小限のHTMLとJavascriptを送り、クライアント側でHTMLを生成。
 
-SSG 
-	⁃	ページの内容が変わらない固定ページ
+### SSR (Server Side Rendering)
+サーバー上でReactコードを実行してHTMLを生成し、クライアントに送る。
 
+### SSG (Static Site Generation)
+内容が変わらない固定ページを事前にビルドする。
 
-レンダリング手法をページごとに設定だったのが、コンポーネント単位でレンダリングできるようになった。app router
+### App Router
+レンダリング手法をページ単位からコンポーネント単位で設定可能になった。  
+`'use client'` を書くとクライアントコンポーネントになる。  
+サーバーコンポーネントからクライアントは呼べるが、その逆は不可。
 
+---
 
-'use client'と書くことで、クライアントコンポーネントになる。
+## データ取得・作成
 
-サーバーコンポ年とからクライアントを呼び出すことはできるが、逆はできない、。
+- GET系: fetch
+- 作成/削除系: Route Handlers, Server Actions
 
+### Route Handlers
+例: `/app/api/posts/route.ts` に処理関数を定義する。
 
+### Server Actions
+`'use server'` を書いた関数でfetch相当の処理をサーバー側で実行可能。
 
-データ作成
-GET
-デー削除、作成
-Route Handlerts
-Server Actions
+---
 
+## Tailwind CSS
 
+EslintプラグインでTailwindクラスの並び順を自動整形できる。  
+参照: https://github.com/yamaryo416/nextjs-practice/tree/main/public
 
+---
 
-/app/api/posts/route.ts
-というファイルを作り、やりたい処理を関数で書くとできる。
+## Prisma
 
+公式では `npx prisma init --db --output ../app/generated/prisma` とあるが、 `init` だけで良い場合があった。
 
-/app/actions.ts
-'use' client
+### 接続
+`.env` に `DATABASE_URL` を記載し、docker-composeで立てたDBに接続する。
 
+### ORM
+Object Relational Mapping。DBとTypeScriptを繋げるツール。
 
+### schema.prisma
+テーブル構造を定義する。`?` を付けるとnull許容。
 
-Server Actionsを使う。
+```prisma
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique @db.VarChar(255)
+  password  String
+  name      String
+  imageUrl  String?  @map("image_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-Tailwindcss
+  @@index([email])
+  @@map("users")
+}```
 
-高度な
+@map / @@map
+@map: フィールド名とDBカラム名を変える。
 
+@@map: モデル名とテーブル名を変える（例: Userモデル → usersテーブル）。
 
-
-
-https://github.com/yamaryo416/nextjs-practice/tree/main/public
-
-Eslintのプラグインでtailwindの並び順を自動で変えてくれるやつをいれた。
-
-3ヶ月前くらいなのに、もうURLがない。
-https://www.prisma.io/docs/guides/nextjs
-これでやると、微妙に違う。
-コマンドの内容はほぼ同じだが、
-npx prisma init --db --output ../app/generated/prisma
-こうなってる。
-けどinitだけでいい。
-
-データベースの接続のところ。
-npx presma initでprismaディレクトリを出した。
-中にはschema.prismaが入ってる。そこで
-環境変数でDATABASE_URLを
-
-
-
-
-
-.envに書いてあるURLの、docker-composeで作ったデータベース
-
-schema.prisma
-nullを許容するには?を
-
-
-ORMとは
-オブジェクト
-リレーショナル
-マッピング
-データベースとTypeScriptをつなげるツール。
-
-Prisma schema（schema.prisma）でテーブル構造を定義し、
+マイグレーション
 bash
-コピーする編集する
+コピーする
+編集する
 npx prisma migrate dev
-でDBにテーブルを自動生成。
+schema.prismaの内容でmigrationファイルが生成されDBに適用される。
 
-Prisma Clientを使うと、SQLを書かずにTypeScriptからDB操作できる。
+--create-only を付けると適用せずファイル生成のみ。
+例えば ALTER TABLE 文で制約追加なども可能。
 
-https://zenn.dev/hossy_worlds/articles/a8c10c129659e5
-reactのコンポーネントを作成するrafcとかのショートカット
-
-import { PrismaClient } from '@prisma/client';
-
+Prisma Client
+ts
+コピーする
+編集する
+```import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const user = await prisma.user.create({
@@ -101,190 +94,108 @@ const user = await prisma.user.create({
     name: "Test User",
   },
 });
-
 console.log(user);
+prisma.user.create```
+でINSERTが実行され、戻り値は型推論される。
 
-ここでは prisma.user.create と書くだけで ✔️ INSERT文が生成・実行され、 ✔️ 戻り値は自動的に型付けされる。
+Tips
+schema.prisma の output 設定が原因で Prisma.UserCreateInput[] が生成されないことがあった。
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique @db.VarChar(255)
-  password String
-  name  String
-  imageUrl String? @map("image_url")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+クライアント/サーバーコンポーネント
+クライアント: インタラクティブ処理 (例: useEffect) が可能。
 
-  @@index([email])
-  @@map("users")
-}
+サーバー: Prisma等サーバー専用ライブラリが利用できる。
 
-schema.prismaに
-@mapがあると、
-TypeScriptで呼ぶときは左の変数でキャメルケース。
-MySQLとかデータベースにはスネークケース
+"use client" は末端のみにつけるべき。
+クライアントコンポーネントでは Prisma は使用不可。
 
-@@mapは、
-テーブル名を複数形にしたい。
-Prismaのモデル名はUserで定義してるけど、
-DB上のテーブルにはusers
+Suspense
+Reactのコンポーネント。同期処理を中に入れると先に描画してくれる。
 
+Zod
+スキーマ定義ライブラリ。エラー処理の見通しが良くなる。
 
-既存DBがテーブル名を複数形で持っている場合（users, postsなど）。
-Prismaでは単数モデル名が推奨されるため、コードとDBで名前が一致しないときに使う。
+zodResolver でReact Hook Formと連携可能
 
-emailにインデックスを貼るとは、検索の際に高速化できる
+schema.prismaと合わせて zod-prisma-types を使うとDBスキーマとZodスキーマを統合できる
 
+参照: https://v3.zod.dev/ERROR_HANDLING?id=customizing-errors-with-zoderrormap
 
+Server Actions
+"use server" を定義することで、Prismaのようなサーバー側でしか動かない処理を呼べる。
+fetch API と同様の処理をサーバー上で型安全に書ける。
 
-npx prisma migrate dev
-でprisma ディレクトリのmigration下ができる。
-そこにはさっき書いたmodelのsql文ができている。
+サーバーコンポーネントから呼ぶ場合は戻り値を取れない。
+ユーザーインタラクション重視ならクライアント側、パフォーマンス重視ならサーバー側で使用する。
 
+参照: https://nextjs.org/docs/app/getting-started/updating-data
 
-npx prisma migrate dev —create-only
-をしたあとに、さらに制約をつけられる。
-テーブルを選択し、制約名とチェックする内容のifを書く
+React Hook Form
+不要なレンダリングを抑制可能。
+Zodと合わせてバリデーション実装が容易。
 
-ALTER TABLE "users" ADD CONSTRAINT "users_name_length_check" CHECK (length("name") >= 1);
+next-safe-action と連携可能
 
+nextsafeaction でスキーマ定義とフォーム処理を統合できる
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-
-schemaのoutputというところがサイトにはあるが、それを削除しないとエラーが起きる。
-
-Prisma.UserCreateInput[]
-が生成されていない。
-
-
-client componentではインタラクティブなことができる。
-use Effectとかできる。
-
-"use client"は
-なるべくサーバーコンポーネントにすべきなので
-use clientは末端ですべき。
-
-
-
-なお、クライアントコンポーネントではprismaは使用できない。
-
-https://nextjs.org/docs/app/api-reference/file-conventions/route#request-body
-
-
-SuspenseというReactのコンポーネントの中に同期処理をいれると、先に描画してくれる。
-
-zodというライブラリは
-スキーマの設計図。
-
-エラー処理の見通しをよくしてくれるらしい。
-データを継承してエラーを
-
-
-server actions
-https://nextjs.org/docs/app/getting-started/updating-data
-
-
-zod
-
-"use server"を定義することで、
-サーバーアクションは、prismaのようなサーバーでしか動かないものでも呼ぶことができる。
-
-fetch apiと同様の処理を書けた。
-
-
-servercomponentで呼び出すserveractionは戻り値を取れない
-
-
-https://nextjs.org/docs/14/app/building-your-application/routing/error-handling
-error handling
-
-
-
-サーバーアクションは
-クライアントでもサーバーアクションでも呼び出せる。
-ユーザーインタラクションを重視
-=> クライアント　（戻り値で柔軟）
-パフォーマンス重視
-=> サーバー　リダイレクトくらい
-
-
-react hook form 不要なレンダリングを抑えることができる。
-zodも使えて便利。
+参照:
 https://react-hook-form.com/get-started#SchemaValidation
-
 https://github.com/next-safe-action/adapter-react-hook-form
-
-zodResolverでバリデーションをできる。
-
-
-nextsafeactionをいれると簡単にスキーマを定義でき、セキュアにできる。reacthook form とも連携でき、状態に応じた表示もできる。
 https://next-safe-action.dev/docs/integrations/react-hook-form
 
+Shadcn UI
+CLIツールで直接コードを生成。カスタマイズ性が高い。
 
+参照: https://ui.shadcn.com/docs/components/card
 
-shadcnはCLIツールを使って直接コードにコピーする形になる。カスタマイズ性が高い。
-https://ui.shadcn.com/docs/components/card
+Sonner
+通知UIライブラリ。
 
+参照: https://ui.shadcn.com/docs/components/sonner
 
+Composition Pattern
+子要素をchildrenで渡す場合、サーバークライアント構成が維持される。
 
-https://v3.zod.dev/ERROR_HANDLING?id=customizing-errors-with-zoderrormap
+bcryptjs
+パスワードをハッシュ化し、DBに保存するために使用。
 
+参照: https://www.npmjs.com/package/bcryptjs
 
-https://www.npmjs.com/package/zod-prisma-types
-schema.prismaで、zodを使うことでデータベースに登録するモデルの最大や最小とか、エラーメッセージもバリデーションできる。
+AWS SDK S3
+@aws-sdk/client-s3: S3インスタンスに接続
 
-https://ui.shadcn.com/docs/components/sonner
-sonnerで通知みたいなものができる。
+@aws-sdk/lib-storage: 画像アップロード処理
 
-子要素でもchildrenで渡すときはサーバークライアントのままになる。
-composition patern
+docker-composeで立ち上げたS3Mockに接続した。
+credential設定が必要だった。
 
-https://www.npmjs.com/package/bcryptjs
-bcryptでpasswordをハッシュ化できる。それをデータベースに登録。
+jose (JWT)
+ログイン情報をcookieに保存する際に使用。
 
+JWT = JSON Web Token
+構成: ヘッダー / ペイロード / 署名
+エンコードして返却し、ログイン後はauthtokenにJWTが格納される。
 
-https://www.npmjs.com/package/@aws-sdk/client-s3
-s3インスタンスにアップロードできる。
-今回はdockerで立ち上げてるところに接続。
-https://www.npmjs.com/package/@aws-sdk/lib-storage
-画像のアップロードの際に使う。
+参照: https://www.npmjs.com/package/jose
 
+Middleware
+ログイン判定などで使用。
 
-37.画像をS3に保存されるようにするのコミットで、動画通りにS3Clientオブジェクトを作ると、credentialがなく画像アップロードできないので、credentialのところを作った方が良い、
-
-https://www.npmjs.com/package/jose
-jose 
-ログイン時の情報をcookieに保存する
-	•	JWT = JSON Web Token
-ユーザー認証やAPI認可などで使われる、
-	•	ヘッダー
-	•	ペイロード
-	•	署名
-で構成されるトークンフォーマット。
-渡されたデータをjwtにエンコードして返す。
-
-ログインが完了した後、authtokenにjwt tokenが格納されていることがわかる。
-
-
-https://nextjs.org/docs/14/app/building-your-application/routing/middleware
-middleware 今ログインしているかどうかを判断
-
+ts
+コピーする
+編集する
 export const config = {
   matcher: '/about/:path*',
 }
+例: /about 以下を全て対象にする。
 
-about下のものはリダイレクト
-    '/((?!login|signup|_next/static|_next/image|favicon.ico).*)',
-こうするとloginとsignupと静的ファイル以外はリダイレクト
+ts
+コピーする
+編集する
+'/((?!login|signup|_next/static|_next/image|favicon.ico).*)'
+例: login, signup, 静的ファイル以外を認証対象にする。
 
-cookieからjwtを取得。
-不正でないなら通常のルーティング
-jwtをデコーディングして正しいかを比較している
+cookieからJWTを取得し、デコードして認証処理を行う。
+
+参照: https://nextjs.org/docs/14/app/building-your-application/routing/middleware
+
