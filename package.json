@@ -16,12 +16,18 @@
     "@next-safe-action/adapter-react-hook-form": "^2.0.0",
     "@prisma/client": "^6.11.1",
     "@prisma/extension-accelerate": "^2.0.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.525.0",
     "next": "^15.2.2",
     "next-safe-action": "^8.0.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",
-    "zod": "^3.25.74"
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.25.74",
+    "zod-prisma-types": "^3.2.4"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
