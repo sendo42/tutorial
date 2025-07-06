@@ -12,7 +12,7 @@ import SignupForm from "@/features/auth/components/SignupForm"
 
 const SignupPage = () => {
   return (
-    <div>
+    <div className="flex min-h-screen items-center justify-center">
         <Card>
             <CardHeader>
                 <CardTitle>ユーザー登録</CardTitle>

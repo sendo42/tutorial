@@ -57,13 +57,13 @@ const SignupForm = () => {
     return (
       <div>
         <Form {...form}>
-          <form onSubmit={handleSubmitWithAction} className="space-y-8">
+          <form onSubmit={handleSubmitWithAction} className="space-y-4">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>ユーザー名</FormLabel>
                   <FormControl>
                     <Input placeholder="shadcn" {...field} />
                   </FormControl>
@@ -79,7 +79,7 @@ const SignupForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>メールアドレス</FormLabel>
                   <FormControl>
                     <Input placeholder="shadcn" {...field} />
                   </FormControl>
@@ -95,7 +95,7 @@ const SignupForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>パスワード</FormLabel>
                   <FormControl>
                     <Input placeholder="shadcn" {...field} />
                   </FormControl>
@@ -127,9 +127,11 @@ const SignupForm = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={action.isPending}>
-              {action.isPending ? "送信中..." : "送信"}
-            </Button>
+            <div className="flex justify-center">
+              <Button type="submit" disabled={action.isPending}>
+                {action.isPending ? "送信中..." : "送信"}
+              </Button>
+            </div>
           </form>
         </Form>
     </div>
