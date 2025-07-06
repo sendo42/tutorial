@@ -10,3 +10,8 @@ export const signupFormValuesSchema = UserOptionalDefaultsSchema.pick ({
         message: "画像を選択してください",
     }).optional(),
 })
+
+export const loginFormValuesSchema = UserOptionalDefaultsSchema.pick({
+    email: true,
+    password:true,
+})
