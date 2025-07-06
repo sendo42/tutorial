@@ -65,7 +65,7 @@ const SignupForm = () => {
                 <FormItem>
                   <FormLabel>ユーザー名</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="test" {...field} />
                   </FormControl>
                   <FormDescription>
                     これは公開表示する名前です.
@@ -81,7 +81,7 @@ const SignupForm = () => {
                 <FormItem>
                   <FormLabel>メールアドレス</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="test@example.com" {...field} />
                   </FormControl>
                   <FormDescription>
                     通知を受け取るメールアドレスです。
@@ -97,7 +97,7 @@ const SignupForm = () => {
                 <FormItem>
                   <FormLabel>パスワード</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="password" {...field} />
                   </FormControl>
                   <FormDescription>
                     英数字含めて8文字以上で入力してください。
@@ -114,7 +114,6 @@ const SignupForm = () => {
                   <FormLabel>画像</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="shadcn"
                       type="file"
                       onChange={(e) => field.onChange(e.target.files?.[0])}
                       onBlur={field.onBlur}

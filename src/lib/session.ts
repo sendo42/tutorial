@@ -1,5 +1,6 @@
 import * as jose from 'jose'
 import { cookies } from 'next/headers'
+import { AuthenticationError } from './error'
 
 type JWTPayload = {
     userId: number
@@ -26,6 +27,23 @@ export const signJWT = async(payload: JWTPayload): Promise<string> =>{
 
 }
 
+export const verifyJWT = async(token: string): Promise<JWTPayload> => {
+    const secret = new TextEncoder().encode(JWT_SECRET) 
+
+
+    const { payload } = await jose.jwtVerify<JWTPayload>(token, secret, {
+        issuer: ISSUER,
+        audience: AUDIENCE,
+    })
+
+    return payload
+}
+
+export const getAuthToken = async (): Promise<string | undefined> => {
+    const cookieStore = await cookies()
+    return cookieStore.get(COOKIE_NAME)?.value
+}
+
 export const setAuthToken = async (token: string) => {
     const cookieStore = await cookies()
 
@@ -37,4 +55,19 @@ export const setAuthToken = async (token: string) => {
         maxAge: 60 * 60 * 24, // 1 day 
     })
 
+}
+
+export const getCurrentUser = async () => {
+    const token = await getAuthToken()
+
+    if (token == null) {
+        throw new AuthenticationError("認証トークンが見つかりません")
+    }
+
+    try {
+        const payload = await verifyJWT(token)
+        return payload
+    } catch {
+        throw new AuthenticationError("認証トークンが無効です")
+    }
 }

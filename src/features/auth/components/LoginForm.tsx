@@ -61,7 +61,7 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>メールアドレス</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="test@example.com" {...field} />
                   </FormControl>
                   <FormDescription>
                     通知を受け取るメールアドレスです。
@@ -77,7 +77,7 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>パスワード</FormLabel>
                   <FormControl>
-                    <Input placeholder="shadcn" {...field} />
+                    <Input placeholder="password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
