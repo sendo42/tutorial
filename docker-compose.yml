@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+  s3mock:
+    image: adobe/s3mock
+    environment:
+      initialBuckets: images
+      retainFilesOnExit: "true"
+      root: /s3mock
+      debug: "true"
+    ports:
+      - "9090:9090"
+      - "9191:9191"
+    volumes:
+      - ./tmp/s3mock:/s3mock
+volumes:
+  pgdata:
