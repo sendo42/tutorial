@@ -4,10 +4,11 @@ import { actionClient } from "@/lib/safe-action";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { signupFormValuesSchema } from "../schemas";
+import { uploadImageToS3 } from "@/lib/s3";
 
 export const signup = actionClient
     .schema(signupFormValuesSchema)
-    .action(async ({ parsedInput: { name, email, password } }) => {
+    .action(async ({ parsedInput: { name, email, password, image } }) => {
         try {
             const existingUser = await prisma.user.findUnique({
                 where: {
@@ -21,11 +22,16 @@ export const signup = actionClient
                 };
             }
             const hashedPassword = bcrypt.hashSync(password, 10);
+            let imageUrl: string | undefined
+            if (image != null) {
+                imageUrl = await uploadImageToS3(image, "users");
+            }
             await prisma.user.create({
                 data: {
                     name,
                     email,
                     password: hashedPassword,
+                    imageUrl,
                 }
             })
             return {
