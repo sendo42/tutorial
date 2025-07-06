@@ -1,35 +1,58 @@
-'use client'
+"use client"
 
-import React, { ChangeEvent, useState } from 'react'
-import { createUserActions } from './create-user-actions';
+import React, { useState } from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { z } from "zod"
+import { createUserActions, CreateUserResult } from "./create-user-actions"
 
-const ClientComponent = () => {
-  const [data, setData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+const createUserSchema = z.object({
+    name: z.string().min(1).max(30),
+    email: z.string().email().max(100),
+    password: z.string().min(8).max(100),
+})
 
-  const onChangeData = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
+type CreateUserData = z.infer<typeof createUserSchema>
 
-    setData({ ...data, [name]: value });
+export default function ClientComponent() {
+    const [result, setResult] = useState<CreateUserResult | null>(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateUserData>({
+    resolver: zodResolver(createUserSchema),
+  })
+  const onSubmit: SubmitHandler<CreateUserData> = async (data) => {
+    const res = await createUserActions(data)
+    setResult(res)
   }
-    
 
-  const onSubmit = () => {
-    createUserActions(data).then((res) => {
-        console.log(res);
-    })
-  }
-    return (
-    <div>
-        <input className="border" type="text" name="name" onChange={onChangeData} />
-        <input className="border" type="email" name="email" onChange={onChangeData} />
-        <input className="border" type="password" name="password" onChange={onChangeData} />
-        <button onClick={onSubmit}>Submit</button>
-    </div>
+
+  return (
+    /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {/* register your input into the hook by invoking the "register" function */}
+
+
+      {/* include validation with required or other standard HTML validation rules */}
+      {/* errors will return when field validation fails  */}
+      <div>
+          <input className="border" {...register("name")} />
+          {errors.name != null && <span>{errors.name.message}</span>}
+      </div>
+        <div>
+          <input className="border" {...register("email")} />
+          {errors.email != null && <span>{errors.email.message}</span>}
+      </div>
+        <div>
+          <input className="border" {...register("password")} />
+          {errors.password != null && <span>{errors.password.message}</span>}
+      </div>
+      {result != null && <p>{result.messeage}</p>}
+
+
+    <button>送信</button>
+    </form>
   )
 }
-
-export default ClientComponent
