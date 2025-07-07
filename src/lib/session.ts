@@ -13,6 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET ?? "invalid"
 const ISSUER = "ec-app"
 const AUDIENCE = "ec-app-web"
 const COOKIE_NAME = "auth-token"
+
 export const signJWT = async(payload: JWTPayload): Promise<string> =>{
     const secret = new TextEncoder().encode(JWT_SECRET)
     const alg = 'HS256'
