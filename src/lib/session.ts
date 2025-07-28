@@ -31,7 +31,6 @@ export const signJWT = async(payload: JWTPayload): Promise<string> =>{
 export const verifyJWT = async(token: string): Promise<JWTPayload> => {
     const secret = new TextEncoder().encode(JWT_SECRET) 
 
-
     const { payload } = await jose.jwtVerify<JWTPayload>(token, secret, {
         issuer: ISSUER,
         audience: AUDIENCE,
@@ -58,7 +57,7 @@ export const setAuthToken = async (token: string) => {
 
 }
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<JWTPayload> => {
     const token = await getAuthToken()
 
     if (token == null) {

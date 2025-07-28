@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import Header from '@/components/layouts/Header'
 
 type PropsType = {
     children: ReactNode
@@ -6,7 +7,10 @@ type PropsType = {
 
 const AuthenticatedLayout = ({children}: PropsType) => {
   return (
-    <>{children}</>
+    <>
+      <Header />
+      {children}
+    </>
   )
 }
 
