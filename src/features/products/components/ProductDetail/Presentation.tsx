@@ -23,7 +23,7 @@ const ProductDetailPresentation = ({ product }: PropsType) => {
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-bold">{title}</h1>
-                    <Link href={"/mypage/products/${id}/edit"}>
+                    <Link href={`/mypage/products/${id}/edit`}>
                         <Button variant="ghost" size="icon">
                             <Edit size={16} />
                         </Button>

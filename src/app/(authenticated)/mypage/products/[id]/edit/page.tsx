@@ -1,7 +1,8 @@
 import { pathParamIdSchema } from '@/schemas'
 import React from 'react'
 import { notFound } from 'next/navigation'
-import MyProductDetailContainer from '@/features/products/components/ProductDetail/MyProductDetailContainer'
+import UpdateProductFormContainer from '@/features/products/components/ProductForm/EditProductContainer'
+import ProductFormCardLayout from '@/features/products/components/ProductFormCardLayout'
 
 type PropsType = {
   params: Promise<{ id: string }>
@@ -16,7 +17,9 @@ const UserProductEditPage = async ({ params }: PropsType) => {
         return notFound()
     }
     return (
-        <MyProductDetailContainer id={validation.data} />
+        <ProductFormCardLayout title="商品編集" description='商品情報を編集します。'>
+            <UpdateProductFormContainer id={validation.data} />
+        </ProductFormCardLayout>
     )
 }
 
