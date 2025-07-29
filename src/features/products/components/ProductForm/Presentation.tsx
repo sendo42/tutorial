@@ -41,7 +41,7 @@ const ProductFormPresentation = ({ product }: PropsType) => {
               if (data.success) {
                 toast.success(data.message)
                 setTimeout(() => {
-                  router.push("/mypage")
+                  router.push("/mypage/products/${data.id}")
                 }, 1000)
               } else {
                 toast.error(data.message)

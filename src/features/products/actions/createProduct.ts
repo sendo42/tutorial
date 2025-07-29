@@ -15,7 +15,7 @@ export const createProduct = authedClient
             if (image != null) {
                 imageUrl = await uploadImageToS3(image, "products");
             }
-            await prisma.product.create({
+            const product = await prisma.product.create({
                 data: {
                     title,
                     description,
@@ -26,6 +26,7 @@ export const createProduct = authedClient
                 }
             })
             return {
+                id: product.id,
                 success: true,
                 message: "Product created successfully",
             }

@@ -11,15 +11,6 @@ export const getCurrentUserProductById = async (id: number) => {
                 id,
                 userId
             },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        imageUrl: true
-                    }
-                }
-            }
         })
     } catch (err) {
         console.error(err)

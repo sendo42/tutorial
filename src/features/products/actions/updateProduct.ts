@@ -36,6 +36,7 @@ export const updateProduct = authedClient
                 data,
             })
             return {
+                id,
                 success: true,
                 message: "Product update successfully",
             }

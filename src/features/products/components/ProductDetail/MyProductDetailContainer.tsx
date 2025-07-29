@@ -1,5 +1,5 @@
 import React from 'react'
-import { getCurrentUserProductById } from '../../queries/getCurrentUserProductById'
+import {getCurrentUserProductWithUser } from '../../queries/getCurrentUserProductWithUser'
 import { notFound } from 'next/navigation'
 import ProductDetailPresentation from './Presentation'
 
@@ -8,7 +8,7 @@ type PropsType = {
 }
 
 const MyProductDetailContainer = async ({ id }: PropsType) => {
-    const product = await getCurrentUserProductById(id)
+    const product = await getCurrentUserProductWithUser(id)
   
     if( product == null) {
         return notFound()
