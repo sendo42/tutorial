@@ -1,6 +1,7 @@
 import ProductFormCardLayout from '@/features/products/components/ProductFormCardLayout'
 import React from 'react'
-import ProductForm from '@/features/products/components/ProductForm'
+import ProductForm from '@/features/products/components/ProductForm/Presentation'
+import CreateProductFormContainer from '@/features/products/components/ProductForm/CreateProductFormContainer'
 
 const ProductCreatePage = () => {
   return (
@@ -8,6 +9,7 @@ const ProductCreatePage = () => {
         title="商品登録"
         description="新しい商品を登録します。">
         <ProductForm />
+        <CreateProductFormContainer />
     </ProductFormCardLayout>
     )
 }

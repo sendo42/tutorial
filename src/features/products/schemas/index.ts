@@ -12,3 +12,7 @@ export const productCreateFormValuesSchema = ProductOptionalDefaultsSchema.pick 
         message: "画像を選択してください",
     }).optional(),
 })
+
+export const productUpdateFormValuesSchema = productCreateFormValuesSchema.merge(z.object({
+    id: z.number().min(1),
+}))

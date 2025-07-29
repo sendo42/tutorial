@@ -17,14 +17,23 @@ import { Input } from "@/components/ui/input"
 
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { productCreateFormValuesSchema } from '../schemas/index';
-import { createProduct } from "../actions/createProduct";
+import { productCreateFormValuesSchema } from '../../schemas/index';
+import { createProduct } from "../../actions/createProduct";
+import { Product } from '@prisma/client';
+import { productUpdateFormValuesSchema } from '../../schemas/index';
+import { updateProduct } from "../../actions/updateProduct";
 
-const ProductForm = () => {
+type PropsType = {
+  product?: Product
+}
+
+const ProductFormPresentation = ({ product }: PropsType) => {
+  const isEdit = product != null
+
   const router = useRouter()
-  const { form, action, handleSubmitWithAction } =
-  useHookFormAction(
-    createProduct, zodResolver(productCreateFormValuesSchema),
+  const { form, action, handleSubmitWithAction } = useHookFormAction(
+    isEdit ? updateProduct : createProduct,
+    zodResolver(isEdit ? productUpdateFormValuesSchema : productCreateFormValuesSchema),
     {
           actionProps: {
             onSuccess: ({data}) => {
@@ -41,10 +50,11 @@ const ProductForm = () => {
           },
           formProps: {
             defaultValues: {
-              title: "",
-              description: "",
-              price: 0,
-              stock: 0,
+              ...(isEdit ? { id: product.id } : {}),
+              title: product?.title ?? "",
+              description: product?.description ?? "",
+              price: product?.price ?? 0,
+              stock: product?.stock ?? 0,
               image: undefined,
             },
           },
@@ -139,4 +149,4 @@ const ProductForm = () => {
   )
 }
 
-export default ProductForm
+export default ProductFormPresentation
