@@ -1,6 +1,7 @@
 import { pathParamIdSchema } from '@/schemas'
 import React from 'react'
 import { notFound } from 'next/navigation'
+import MyProductDetailContainer from '@/features/products/components/ProductDetail/MyProductDetailContainer'
 
 type PropsType = {
   params: Promise<{ id: string }>
@@ -15,7 +16,7 @@ const UserProductDetailPage = async ({ params }: PropsType) => {
         return notFound()
     }
   return (
-    <div>UserProductDetailPage: {id}</div>
+    <MyProductDetailContainer id={validation.data} />
   )
 }
 

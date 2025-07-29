@@ -5,3 +5,12 @@ export class AuthenticationError extends Error {
         Object.setPrototypeOf(this, AuthenticationError.prototype)
     }
 }
+
+export class ApplicationError extends Error {
+    constructor(message: string) {
+        super(message)
+        this.name = "ApplicationError"
+        Object.setPrototypeOf(this, ApplicationError.prototype)
+    }
+}
+
