@@ -34,9 +34,30 @@ model User {
   imageUrl String? @map("image_url")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  Products Product[]
 
   @@index([email])
   @@map("users")
+}
+
+model Product {
+  id    Int     @id @default(autoincrement())
+  /// @zod.string.min(1).max(100)
+  title String  @db.VarChar(100)
+  /// @zod.string.min(1).max(4000)
+  description String @db.VarChar(4000)
+  /// @zod.number.min(1)
+  price Int
+  /// @zod.number.min(0)
+  stock Int
+  imageUrl String? @map("image_url")
+  userId Int @map("user_id")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("products")
 }
 
 // model Post {
