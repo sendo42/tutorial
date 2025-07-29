@@ -9,7 +9,9 @@ const AuthenticatedLayout = ({children}: PropsType) => {
   return (
     <>
       <Header />
-      {children}
+      <div className="mx-auto my-8 w-11/12">
+        {children}
+      </div>
     </>
   )
 }
