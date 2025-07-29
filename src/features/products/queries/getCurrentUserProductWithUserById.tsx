@@ -1,10 +1,8 @@
 import prisma from "@/lib/prisma"
-import { getCurrentUser } from "@/lib/session";
-import { ApplicationError } from "@/lib/error";
+import { withUserId } from "@/lib/query-handler";
 
-export const getCurrentUserProductWithUser = async (id: number) => {
-    try {
-        const { userId } = await getCurrentUser()
+export const getCurrentUserProductWithUserById = withUserId (
+    async (userId:number, id: number) => {
     
         return prisma.product.findUnique({
             where: {
@@ -21,9 +19,6 @@ export const getCurrentUserProductWithUser = async (id: number) => {
                 }
             }
         })
-    } catch (err) {
-        console.error(err)
-        throw new ApplicationError("Failed to fetch product")
-    }
 
-}
+
+}, "商品取得エラー")

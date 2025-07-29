@@ -1,6 +1,6 @@
 import React from 'react'
 import ProductFormPresentation from './Presentation'
-import { getCurrentUserProductById } from '../../queries/getCurrentUserProduct'
+import { getCurrentUserProductById } from '../../queries/getCurrentUserProductById'
 import { notFound } from 'next/navigation'
 
 type PropsType = {
